@@ -9,10 +9,14 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { createClient } from "@supabase/supabase-js";
 
-// Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Initialize Supabase client with fallbacks to prevent runtime errors
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+// Only create the client if URL is available
+const supabase = supabaseUrl 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -25,6 +29,13 @@ export default function LoginPage() {
     
     if (!email || !password) {
       toast.error("Please fill in all fields");
+      return;
+    }
+    
+    // Check if Supabase is properly initialized
+    if (!supabase) {
+      toast.error("Authentication service is not available. Please check your configuration.");
+      console.error("Supabase client is not initialized. Missing environment variables.");
       return;
     }
     
@@ -117,6 +128,15 @@ export default function LoginPage() {
                 </Link>
               </p>
             </div>
+
+            {!supabaseUrl && (
+              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                <p className="text-amber-700 text-sm">
+                  <strong>Configuration Notice:</strong> Supabase environment variables are missing. 
+                  Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your environment.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </main>
