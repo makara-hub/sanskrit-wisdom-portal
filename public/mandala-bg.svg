@@ -1,0 +1,18 @@
+
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.1">
+    <circle cx="400" cy="400" r="300" stroke="#F97316" stroke-width="2"/>
+    <circle cx="400" cy="400" r="250" stroke="#F97316" stroke-width="2"/>
+    <circle cx="400" cy="400" r="200" stroke="#F97316" stroke-width="2"/>
+    <circle cx="400" cy="400" r="150" stroke="#F97316" stroke-width="2"/>
+    <circle cx="400" cy="400" r="100" stroke="#F97316" stroke-width="2"/>
+    <line x1="100" y1="400" x2="700" y2="400" stroke="#F97316" stroke-width="2"/>
+    <line x1="400" y1="100" x2="400" y2="700" stroke="#F97316" stroke-width="2"/>
+    <line x1="186.863" y1="186.863" x2="613.137" y2="613.137" stroke="#F97316" stroke-width="2"/>
+    <line x1="186.863" y1="613.137" x2="613.137" y2="186.863" stroke="#F97316" stroke-width="2"/>
+    <path d="M400 100C400 100 500 200 400 300C300 400 500 500 400 700" stroke="#F97316" stroke-width="2" stroke-dasharray="4 4"/>
+    <path d="M400 100C400 100 300 200 400 300C500 400 300 500 400 700" stroke="#F97316" stroke-width="2" stroke-dasharray="4 4"/>
+    <path d="M100 400C100 400 200 300 300 400C400 500 500 300 700 400" stroke="#F97316" stroke-width="2" stroke-dasharray="4 4"/>
+    <path d="M100 400C100 400 200 500 300 400C400 300 500 500 700 400" stroke="#F97316" stroke-width="2" stroke-dasharray="4 4"/>
+  </g>
+</svg>

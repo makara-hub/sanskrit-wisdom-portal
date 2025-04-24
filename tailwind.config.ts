@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,16 +53,18 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
+				// Sanskrit portal custom colors
+				saffron: '#F97316',  // Vibrant saffron orange
+				royalBlue: '#3B82F6', // Royal blue
+				cream: '#FEF3C7',     // Soft cream background
+				darkText: '#1A1F2C',  // Dark text color
+				lightBlue: '#DBEAFE', // Light blue accent
+				saffronLight: '#FFEDD5', // Light saffron
+				indigo: '#4F46E5',    // Deep indigo accent
+			},
+			fontFamily: {
+				sans: ['Poppins', 'sans-serif'],
+				sanskrit: ['"Noto Sans Devanagari"', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -89,6 +92,9 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			backgroundImage: {
+				'mandala-pattern': "url('/mandala-bg.svg')",
 			}
 		}
 	},
