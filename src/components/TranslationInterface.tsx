@@ -1,7 +1,5 @@
-
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -9,226 +7,189 @@ import { Bookmark, ArrowRight, BookOpen, Languages } from "lucide-react";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { toast } from "sonner";
 
-type TranslationDirection = "english-to-sanskrit" | "sanskrit-to-english";
-type LanguageDisplay = "english" | "sanskrit" | "transliterated";
-
 export default function TranslationInterface() {
-  const [inputText, setInputText] = useState("");
+  const [sourceText, setSourceText] = useState("");
   const [translatedText, setTranslatedText] = useState("");
-  const [direction, setDirection] = useState<TranslationDirection>("english-to-sanskrit");
-  const [displayLanguage, setDisplayLanguage] = useState<LanguageDisplay>("sanskrit");
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [sourceLanguage, setSourceLanguage] = useState("english");
+  const [targetLanguage, setTargetLanguage] = useState("sanskrit");
+  const [displayLanguage, setDisplayLanguage] = useState<"english" | "sanskrit" | "transliterated">("sanskrit");
   const [isLoading, setIsLoading] = useState(false);
-  const [fontSize, setFontSize] = useState<number>(16);
+  const [isSaved, setIsSaved] = useState(false);
 
-  // Mock translation function
-  const translateText = () => {
-    if (!inputText.trim()) {
+  const handleTranslate = () => {
+    if (!sourceText.trim()) {
       toast.error("Please enter text to translate");
       return;
     }
 
     setIsLoading(true);
     
-    // Mock API delay
+    // Mock translation delay
     setTimeout(() => {
-      // Mock translations - in a real app, this would come from an API
-      const mockTranslations: Record<string, string> = {
-        "Hello": "नमस्ते",
-        "Thank you": "धन्यवाद",
-        "Welcome": "स्वागतम्",
-        "How are you?": "कथमस्ति भवान्?",
-        // For demo purposes
-        "One who speaks the truth": "सत्यवादी",
-        "The world is a family": "वसुधैव कुटुम्बकम्",
-        "Knowledge is wealth": "विद्या धनम्",
-        "Peace": "शान्तिः",
-        "Wisdom": "ज्ञानम्"
-      };
+      // This is where you would call your actual translation API
+      const mockTranslation = sourceLanguage === "english" 
+        ? "अहं संस्कृतं पठामि।" 
+        : "I am studying Sanskrit.";
       
-      // Default mock translation if input doesn't match our examples
-      let result = "";
-      
-      if (direction === "english-to-sanskrit") {
-        result = mockTranslations[inputText] || "संस्कृत अनुवाद";
-      } else {
-        // Reverse the object for sanskrit to english
-        const reverseMockTranslations: Record<string, string> = {};
-        Object.entries(mockTranslations).forEach(([eng, sans]) => {
-          reverseMockTranslations[sans] = eng;
-        });
-        result = reverseMockTranslations[inputText] || "English translation";
-      }
-      
-      setTranslatedText(result);
+      setTranslatedText(mockTranslation);
       setIsLoading(false);
+      toast.success("Translation complete");
     }, 1000);
   };
 
-  const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
-    if (!isBookmarked) {
-      toast.success("Translation saved to your bookmarks");
-    } else {
-      toast.success("Translation removed from your bookmarks");
-    }
+  const handleSaveTranslation = () => {
+    // Mock saving functionality
+    toast.success("Translation saved to your history");
+    setIsSaved(true);
   };
 
-  const getTransliteratedText = (text: string): string => {
-    // This is a placeholder function - in a real app this would use a proper transliteration library
-    // For demo purposes we're just returning a mock transliteration
-    if (text === "नमस्ते") return "namaste";
-    if (text === "धन्यवाद") return "dhanyavād";
-    if (text === "स्वागतम्") return "svāgatam";
-    if (text === "कथमस्ति भवान्?") return "kathamasti bhavān?";
-    if (text === "सत्यवादी") return "satyavādī";
-    if (text === "वसुधैव कुटुम्बकम्") return "vasudhaiva kuṭumbakam";
-    if (text === "विद्या धनम्") return "vidyā dhanam";
-    if (text === "शान्तिः") return "śāntiḥ";
-    return "transliterated text";
-  };
-
-  const displayOutputText = () => {
-    if (!translatedText) return "";
-    if (displayLanguage === "english" && direction === "sanskrit-to-english") {
-      return translatedText;
-    }
-    if (displayLanguage === "sanskrit" && direction === "english-to-sanskrit") {
-      return translatedText;
-    }
-    if (displayLanguage === "transliterated" && direction === "english-to-sanskrit") {
-      return getTransliteratedText(translatedText);
-    }
-    return translatedText; // Default fallback
+  const handleSwapLanguages = () => {
+    setSourceLanguage(targetLanguage);
+    setTargetLanguage(sourceLanguage);
+    setSourceText(translatedText);
+    setTranslatedText(sourceText);
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-medium">Sanskrit Translation Tool</h2>
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={toggleBookmark}
-          className={isBookmarked ? "text-saffron" : "text-gray-400"}
-        >
-          <Bookmark className="h-5 w-5" />
-        </Button>
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-darkText">Sanskrit Translator</h1>
+          <p className="text-gray-600">Translate between Sanskrit and English</p>
+        </div>
+        <LanguageToggle 
+          currentLanguage={displayLanguage}
+          onLanguageChange={setDisplayLanguage}
+        />
       </div>
-      
-      <div className="space-y-6">
-        {/* Translation Direction */}
-        <div>
-          <Label htmlFor="direction">Translation Direction</Label>
-          <Select 
-            value={direction} 
-            onValueChange={(value) => setDirection(value as TranslationDirection)}
-          >
-            <SelectTrigger className="mt-1.5">
-              <SelectValue placeholder="Select direction" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="english-to-sanskrit">
-                <div className="flex items-center">
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  <span>English to Sanskrit</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="sanskrit-to-english">
-                <div className="flex items-center">
-                  <Languages className="h-4 w-4 mr-2" />
-                  <span>Sanskrit to English</span>
-                </div>
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        
-        {/* Input Area */}
-        <div>
-          <Label htmlFor="inputText">
-            {direction === "english-to-sanskrit" ? "English Text" : "Sanskrit Text"}
-          </Label>
-          <Textarea
-            id="inputText"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder={direction === "english-to-sanskrit" 
-              ? "Enter English text to translate..." 
-              : "Enter Sanskrit text to translate..."}
-            className={`mt-1.5 min-h-32 ${direction === "sanskrit-to-english" ? "font-sanskrit" : ""}`}
-          />
-        </div>
-        
-        {/* Translate Button */}
-        <div className="flex justify-center">
-          <Button 
-            onClick={translateText} 
-            className="bg-saffron hover:bg-saffron/90 text-white"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>Translating...</>
-            ) : (
-              <>
-                Translate
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </>
-            )}
-          </Button>
-        </div>
-        
-        {/* Output Area */}
-        {translatedText && (
-          <div className="border-t pt-6 mt-6">
-            <div className="flex justify-between items-center mb-3">
-              <Label>
-                {direction === "english-to-sanskrit" ? "Sanskrit Translation" : "English Translation"}
-              </Label>
-              
-              {/* Display options for Sanskrit text */}
-              {direction === "english-to-sanskrit" && (
-                <LanguageToggle 
-                  currentLanguage={displayLanguage}
-                  onLanguageChange={setDisplayLanguage}
-                />
-              )}
-            </div>
-            
-            {/* Font size controls */}
-            <div className="flex items-center justify-end mb-3 space-x-2">
-              <Label htmlFor="font-size" className="text-sm">Font Size:</Label>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setFontSize(Math.max(12, fontSize - 2))}
-                className="h-7 w-7 p-0"
-              >
-                -
-              </Button>
-              <span className="text-sm w-6 text-center">{fontSize}</span>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setFontSize(Math.min(28, fontSize + 2))}
-                className="h-7 w-7 p-0"
-              >
-                +
-              </Button>
-            </div>
-            
-            {/* Output text */}
-            <div 
-              className={`bg-cream rounded-lg p-4 min-h-32 flex items-center justify-center
-                ${displayLanguage === "sanskrit" || (direction === "sanskrit-to-english" && displayLanguage !== "english") ? "font-sanskrit" : ""}
-              `}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Source Text */}
+        <div className="space-y-4">
+          <div className="flex justify-between">
+            <Select value={sourceLanguage} onValueChange={setSourceLanguage}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="english">English</SelectItem>
+                <SelectItem value="sanskrit">Sanskrit</SelectItem>
+              </SelectContent>
+            </Select>
+            <button 
+              onClick={handleSwapLanguages}
+              className="p-2 rounded-md hover:bg-gray-100"
+              aria-label="Swap languages"
             >
-              <p style={{ fontSize: `${fontSize}px` }} className="leading-relaxed">
-                {displayOutputText()}
-              </p>
+              <ArrowRight className="h-5 w-5 rotate-90 md:rotate-0" />
+            </button>
+          </div>
+          
+          <div className="relative">
+            <textarea
+              value={sourceText}
+              onChange={(e) => setSourceText(e.target.value)}
+              placeholder={sourceLanguage === "english" ? "Enter English text..." : "संस्कृत पाठं लिखत..."}
+              className={`w-full h-64 p-4 rounded-md border resize-none focus:outline-none focus:ring-2 focus:ring-saffron focus:border-transparent ${
+                sourceLanguage === "sanskrit" ? "font-sanskrit" : ""
+              }`}
+            />
+            <div className="absolute bottom-3 right-3 text-xs text-gray-500">
+              {sourceText.length} characters
             </div>
           </div>
-        )}
+        </div>
+
+        {/* Translated Text */}
+        <div className="space-y-4">
+          <div className="flex justify-between">
+            <Select value={targetLanguage} onValueChange={setTargetLanguage}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="english">English</SelectItem>
+                <SelectItem value="sanskrit">Sanskrit</SelectItem>
+              </SelectContent>
+            </Select>
+            <button
+              onClick={handleSaveTranslation}
+              className={`p-2 rounded-md hover:bg-gray-100 ${isSaved ? "text-saffron" : ""}`}
+              aria-label="Save translation"
+              disabled={!translatedText}
+            >
+              <Bookmark className="h-5 w-5" />
+            </button>
+          </div>
+          
+          <div className="relative">
+            <div 
+              className={`w-full h-64 p-4 rounded-md border bg-gray-50 overflow-auto ${
+                targetLanguage === "sanskrit" ? "font-sanskrit" : ""
+              }`}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-saffron"></div>
+                </div>
+              ) : translatedText ? (
+                translatedText
+              ) : (
+                <span className="text-gray-400">Translation will appear here...</span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <button
+          onClick={handleTranslate}
+          disabled={isLoading || !sourceText.trim()}
+          className="bg-saffron hover:bg-saffron/90 text-white px-6 py-2 rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        >
+          {isLoading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Translating...
+            </>
+          ) : (
+            <>
+              <Languages className="mr-2 h-5 w-5" /> 
+              Translate
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Additional Features */}
+      <div className="bg-cream rounded-lg p-6 mt-8">
+        <h2 className="text-lg font-medium mb-4">Translation Settings</h2>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="formal">Formal Language</Label>
+              <p className="text-sm text-gray-500">Use more formal and traditional Sanskrit</p>
+            </div>
+            <Switch id="formal" />
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="pronunciation">Show Pronunciation Guide</Label>
+              <p className="text-sm text-gray-500">Display pronunciation hints for Sanskrit terms</p>
+            </div>
+            <Switch id="pronunciation" />
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="grammar">Include Grammar Notes</Label>
+              <p className="text-sm text-gray-500">Show grammatical analysis with translations</p>
+            </div>
+            <Switch id="grammar" />
+          </div>
+        </div>
       </div>
     </div>
   );

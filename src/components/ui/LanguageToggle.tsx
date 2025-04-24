@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Languages } from "lucide-react";
+import { BookOpen, Languages } from "lucide-react";  // Confirmed correct import
 import { cn } from "@/lib/utils";
 
 type LanguageOptions = "english" | "sanskrit" | "transliterated";
