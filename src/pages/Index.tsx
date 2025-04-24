@@ -1,10 +1,9 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Translate, BookOpen, Search, History } from "lucide-react";
+import { Languages, BookOpen, Search, History } from "lucide-react";
 
 const Index = () => {
   return (
@@ -25,7 +24,7 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/translate">
                 <Button className="bg-saffron hover:bg-saffron/90 text-white px-6 py-6 h-auto text-lg w-full sm:w-auto">
-                  <Translate className="mr-2 h-5 w-5" /> Start Translating
+                  <Languages className="mr-2 h-5 w-5" /> Start Translating
                 </Button>
               </Link>
               <Link to="/texts">
@@ -43,7 +42,7 @@ const Index = () => {
             <h2 className="section-title text-center mb-12">Explore Our Features</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <FeatureCard 
-                icon={<Translate />} 
+                icon={<Languages />} 
                 title="Sanskrit Translation" 
                 description="Translate between Sanskrit and English with our intuitive translation tool."
                 link="/translate"

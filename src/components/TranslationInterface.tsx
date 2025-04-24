@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Bookmark, ArrowRight, BookOpen, Translate } from "lucide-react";
+import { Bookmark, ArrowRight, BookOpen, Languages } from "lucide-react";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { toast } from "sonner";
 
@@ -136,7 +136,7 @@ export default function TranslationInterface() {
               </SelectItem>
               <SelectItem value="sanskrit-to-english">
                 <div className="flex items-center">
-                  <Translate className="h-4 w-4 mr-2" />
+                  <Languages className="h-4 w-4 mr-2" />
                   <span>Sanskrit to English</span>
                 </div>
               </SelectItem>

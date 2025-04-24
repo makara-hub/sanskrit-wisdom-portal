@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Translate } from "lucide-react";
+import { BookOpen, Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type LanguageOptions = "english" | "sanskrit" | "transliterated";
@@ -34,7 +34,7 @@ export function LanguageToggle({
         onClick={() => onLanguageChange("sanskrit")}
         className="flex items-center"
       >
-        <Translate className="h-4 w-4 mr-2" />
+        <Languages className="h-4 w-4 mr-2" />
         देवनागरी
       </Button>
       <Button
@@ -43,7 +43,7 @@ export function LanguageToggle({
         onClick={() => onLanguageChange("transliterated")}
         className="flex items-center text-xs md:text-sm"
       >
-        <Translate className="h-4 w-4 mr-2" />
+        <Languages className="h-4 w-4 mr-2" />
         Transliterated
       </Button>
     </div>
