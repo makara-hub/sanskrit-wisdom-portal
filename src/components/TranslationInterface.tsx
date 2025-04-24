@@ -6,6 +6,29 @@ import { Label } from "@/components/ui/label";
 import { Bookmark, ArrowRight, BookOpen, Languages } from "lucide-react";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { toast } from "sonner";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+const supabase = supabaseUrl 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
+
+const LANGUAGES = {
+  english: "en",
+  sanskrit: "sa",
+  hindi: "hi",
+  spanish: "es",
+  french: "fr",
+  german: "de",
+  italian: "it",
+  portuguese: "pt",
+  russian: "ru",
+  japanese: "ja",
+  korean: "ko",
+  chinese: "zh",
+};
 
 export default function TranslationInterface() {
   const [sourceText, setSourceText] = useState("");
@@ -16,31 +39,67 @@ export default function TranslationInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
-  const handleTranslate = () => {
+  const handleTranslate = async () => {
     if (!sourceText.trim()) {
       toast.error("Please enter text to translate");
       return;
     }
 
+    if (!supabase) {
+      toast.error("Translation service is not available. Please check your configuration.");
+      return;
+    }
+
     setIsLoading(true);
     
-    // Mock translation delay
-    setTimeout(() => {
-      // This is where you would call your actual translation API
-      const mockTranslation = sourceLanguage === "english" 
-        ? "अहं संस्कृतं पठामि।" 
-        : "I am studying Sanskrit.";
-      
-      setTranslatedText(mockTranslation);
-      setIsLoading(false);
+    try {
+      const { data, error } = await supabase.functions.invoke('translate', {
+        body: {
+          text: sourceText,
+          sourceLang: LANGUAGES[sourceLanguage as keyof typeof LANGUAGES],
+          targetLang: LANGUAGES[targetLanguage as keyof typeof LANGUAGES],
+        },
+      });
+
+      if (error) throw error;
+
+      setTranslatedText(data.translatedText);
       toast.success("Translation complete");
-    }, 1000);
+    } catch (error) {
+      console.error('Translation error:', error);
+      toast.error("Failed to translate text. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSaveTranslation = () => {
-    // Mock saving functionality
-    toast.success("Translation saved to your history");
-    setIsSaved(true);
+  const handleSaveTranslation = async () => {
+    if (!supabase) {
+      toast.error("Service is not available. Please check your configuration.");
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('translations')
+        .insert([
+          {
+            source_text: sourceText,
+            translated_text: translatedText,
+            source_language: sourceLanguage,
+            target_language: targetLanguage,
+            created_at: new Date().toISOString(),
+          }
+        ]);
+
+      if (error) throw error;
+
+      setIsSaved(true);
+      toast.success("Translation saved to your history");
+    } catch (error) {
+      console.error('Error saving translation:', error);
+      toast.error("Failed to save translation. Please try again.");
+    }
   };
 
   const handleSwapLanguages = () => {
@@ -162,7 +221,6 @@ export default function TranslationInterface() {
         </button>
       </div>
 
-      {/* Additional Features */}
       <div className="bg-cream rounded-lg p-6 mt-8">
         <h2 className="text-lg font-medium mb-4">Translation Settings</h2>
         <div className="space-y-4">
