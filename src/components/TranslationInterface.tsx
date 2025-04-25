@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,6 +29,19 @@ const LANGUAGES = {
   japanese: "ja",
   korean: "ko",
   chinese: "zh",
+  arabic: "ar",
+  dutch: "nl",
+  greek: "el",
+  polish: "pl",
+  swedish: "sv",
+  turkish: "tr",
+  vietnamese: "vi",
+  thai: "th",
+  bengali: "bn",
+  tamil: "ta",
+  telugu: "te",
+  marathi: "mr",
+  urdu: "ur",
 };
 
 export default function TranslationInterface() {
@@ -38,6 +52,7 @@ export default function TranslationInterface() {
   const [displayLanguage, setDisplayLanguage] = useState<"english" | "sanskrit" | "transliterated">("sanskrit");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [autoDetectLanguage, setAutoDetectLanguage] = useState(false);
 
   const handleTranslate = async () => {
     if (!sourceText.trim()) {
@@ -51,12 +66,13 @@ export default function TranslationInterface() {
     }
 
     setIsLoading(true);
+    setIsSaved(false);
     
     try {
       const { data, error } = await supabase.functions.invoke('translate', {
         body: {
           text: sourceText,
-          sourceLang: LANGUAGES[sourceLanguage as keyof typeof LANGUAGES],
+          sourceLang: autoDetectLanguage ? 'auto' : LANGUAGES[sourceLanguage as keyof typeof LANGUAGES],
           targetLang: LANGUAGES[targetLanguage as keyof typeof LANGUAGES],
         },
       });
@@ -64,6 +80,18 @@ export default function TranslationInterface() {
       if (error) throw error;
 
       setTranslatedText(data.translatedText);
+      
+      // If language was auto-detected, update the source language dropdown
+      if (autoDetectLanguage && data.detectedLanguage) {
+        // Find the language key by its code
+        const detectedLangEntry = Object.entries(LANGUAGES).find(
+          ([_, code]) => code === data.detectedLanguage
+        );
+        if (detectedLangEntry) {
+          setSourceLanguage(detectedLangEntry[0]);
+        }
+      }
+      
       toast.success("Translation complete");
     } catch (error) {
       console.error('Translation error:', error);
@@ -103,6 +131,10 @@ export default function TranslationInterface() {
   };
 
   const handleSwapLanguages = () => {
+    if (autoDetectLanguage) {
+      toast.info("Cannot swap when auto-detect is enabled");
+      return;
+    }
     setSourceLanguage(targetLanguage);
     setTargetLanguage(sourceLanguage);
     setSourceText(translatedText);
@@ -113,8 +145,8 @@ export default function TranslationInterface() {
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-darkText">Sanskrit Translator</h1>
-          <p className="text-gray-600">Translate between Sanskrit and English</p>
+          <h1 className="text-2xl font-bold text-darkText">Universal Translator</h1>
+          <p className="text-gray-600">Translate between any language</p>
         </div>
         <LanguageToggle 
           currentLanguage={displayLanguage}
@@ -125,20 +157,41 @@ export default function TranslationInterface() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Source Text */}
         <div className="space-y-4">
-          <div className="flex justify-between">
-            <Select value={sourceLanguage} onValueChange={setSourceLanguage}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select language" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="english">English</SelectItem>
-                <SelectItem value="sanskrit">Sanskrit</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              {!autoDetectLanguage && (
+                <Select value={sourceLanguage} onValueChange={setSourceLanguage}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Source language" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {Object.keys(LANGUAGES).map(lang => (
+                      <SelectItem key={lang} value={lang}>
+                        {lang.charAt(0).toUpperCase() + lang.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              {autoDetectLanguage && (
+                <div className="h-10 px-4 py-2 border rounded-md flex items-center">
+                  Auto-detect
+                </div>
+              )}
+              <div className="flex items-center space-x-2">
+                <Switch 
+                  id="auto-detect"
+                  checked={autoDetectLanguage}
+                  onCheckedChange={setAutoDetectLanguage}
+                />
+                <Label htmlFor="auto-detect" className="cursor-pointer">Auto</Label>
+              </div>
+            </div>
             <button 
               onClick={handleSwapLanguages}
-              className="p-2 rounded-md hover:bg-gray-100"
+              className="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50"
               aria-label="Swap languages"
+              disabled={autoDetectLanguage}
             >
               <ArrowRight className="h-5 w-5 rotate-90 md:rotate-0" />
             </button>
@@ -148,7 +201,7 @@ export default function TranslationInterface() {
             <textarea
               value={sourceText}
               onChange={(e) => setSourceText(e.target.value)}
-              placeholder={sourceLanguage === "english" ? "Enter English text..." : "संस्कृत पाठं लिखत..."}
+              placeholder="Enter text to translate..."
               className={`w-full h-64 p-4 rounded-md border resize-none focus:outline-none focus:ring-2 focus:ring-saffron focus:border-transparent ${
                 sourceLanguage === "sanskrit" ? "font-sanskrit" : ""
               }`}
@@ -164,11 +217,14 @@ export default function TranslationInterface() {
           <div className="flex justify-between">
             <Select value={targetLanguage} onValueChange={setTargetLanguage}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select language" />
+                <SelectValue placeholder="Target language" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="english">English</SelectItem>
-                <SelectItem value="sanskrit">Sanskrit</SelectItem>
+              <SelectContent className="max-h-[300px]">
+                {Object.keys(LANGUAGES).map(lang => (
+                  <SelectItem key={lang} value={lang}>
+                    {lang.charAt(0).toUpperCase() + lang.slice(1)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <button
@@ -227,7 +283,7 @@ export default function TranslationInterface() {
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="formal">Formal Language</Label>
-              <p className="text-sm text-gray-500">Use more formal and traditional Sanskrit</p>
+              <p className="text-sm text-gray-500">Use more formal and traditional language</p>
             </div>
             <Switch id="formal" />
           </div>
@@ -235,7 +291,7 @@ export default function TranslationInterface() {
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="pronunciation">Show Pronunciation Guide</Label>
-              <p className="text-sm text-gray-500">Display pronunciation hints for Sanskrit terms</p>
+              <p className="text-sm text-gray-500">Display pronunciation hints</p>
             </div>
             <Switch id="pronunciation" />
           </div>
