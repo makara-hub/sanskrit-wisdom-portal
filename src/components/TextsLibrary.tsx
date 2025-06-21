@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, BookOpen } from "lucide-react";
 
-// Mock data for Sanskrit texts
+// Expanded collection of Sanskrit texts
 const texts = [
   {
     id: "bhagavad-gita",
@@ -80,10 +80,154 @@ const texts = [
     chapters: 12,
     verses: 2600,
     image: "/placeholder.svg"
+  },
+  {
+    id: "yoga-sutras",
+    title: "Yoga Sutras of Patanjali",
+    category: "Philosophy",
+    description: "Foundational text of yoga philosophy, outlining the eight limbs of yoga practice.",
+    chapters: 4,
+    verses: 196,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "brahma-sutras",
+    title: "Brahma Sutras",
+    category: "Philosophy",
+    description: "Systematic philosophical treatise on the nature of Brahman and ultimate reality.",
+    chapters: 4,
+    verses: 555,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "shiva-purana",
+    title: "Shiva Purana",
+    category: "Mythology",
+    description: "Sacred text dedicated to Lord Shiva, containing stories, hymns, and philosophical teachings.",
+    chapters: 7,
+    verses: 24000,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "vishnu-purana",
+    title: "Vishnu Purana",
+    category: "Mythology",
+    description: "One of the eighteen major Puranas, focusing on Lord Vishnu and his avatars.",
+    chapters: 6,
+    verses: 7000,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "devi-mahatmya",
+    title: "Devi Mahatmya",
+    category: "Scripture",
+    description: "Sacred text celebrating the Divine Mother, also known as Chandi or Durga Saptashati.",
+    chapters: 13,
+    verses: 700,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "katha-upanishad",
+    title: "Katha Upanishad",
+    category: "Philosophy",
+    description: "Upanishad containing the dialogue between Nachiketa and Death, exploring life's deeper meanings.",
+    chapters: 2,
+    verses: 119,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "mandukya-upanishad",
+    title: "Mandukya Upanishad",
+    category: "Philosophy",
+    description: "Shortest of the major Upanishads, exploring the nature of consciousness and reality.",
+    chapters: 1,
+    verses: 12,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "bhagavata-purana",
+    title: "Bhagavata Purana",
+    category: "Mythology",
+    description: "One of the most popular Puranas, focusing on the life and teachings of Krishna.",
+    chapters: 12,
+    verses: 18000,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "hanuman-chalisa",
+    title: "Hanuman Chalisa",
+    category: "Devotional",
+    description: "Forty-verse hymn in praise of Lord Hanuman, composed by Tulsidas.",
+    chapters: 1,
+    verses: 40,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "sundara-kanda",
+    title: "Sundara Kanda",
+    category: "Epic",
+    description: "Fifth book of the Ramayana, focusing on Hanuman's journey to Lanka.",
+    chapters: 1,
+    verses: 2885,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "gayatri-mantra",
+    title: "Gayatri Mantra",
+    category: "Scripture",
+    description: "Most sacred mantra in Hinduism, invoking the divine light of universal consciousness.",
+    chapters: 1,
+    verses: 1,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "ishavasyopanishad",
+    title: "Isha Upanishad",
+    category: "Philosophy",
+    description: "Opening Upanishad of the Shukla Yajurveda, exploring the unity of existence.",
+    chapters: 1,
+    verses: 18,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "ashtavakra-gita",
+    title: "Ashtavakra Gita",
+    category: "Philosophy",
+    description: "Dialogue between sage Ashtavakra and King Janaka on the nature of self and reality.",
+    chapters: 20,
+    verses: 298,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "bhaja-govindam",
+    title: "Bhaja Govindam",
+    category: "Devotional",
+    description: "Composition by Adi Shankaracharya emphasizing devotion over mere intellectual learning.",
+    chapters: 1,
+    verses: 31,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "viveka-chudamani",
+    title: "Viveka Chudamani",
+    category: "Philosophy",
+    description: "Major work by Adi Shankaracharya on the discrimination between the real and unreal.",
+    chapters: 1,
+    verses: 580,
+    image: "/placeholder.svg"
+  },
+  {
+    id: "panchadashi",
+    title: "Panchadashi",
+    category: "Philosophy",
+    description: "Advaita Vedanta text by Vidyaranya, explaining the nature of consciousness and reality.",
+    chapters: 15,
+    verses: 1500,
+    image: "/placeholder.svg"
   }
 ];
 
-// Categories for filtering
+// Updated categories to include new ones
 const categories = [
   "All",
   "Epic",
@@ -91,7 +235,8 @@ const categories = [
   "Scripture",
   "Mythology",
   "Law",
-  "Economics & Politics"
+  "Economics & Politics",
+  "Devotional"
 ];
 
 export default function TextsLibrary() {
