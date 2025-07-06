@@ -6,9 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import TranslatePage from "./pages/TranslatePage";
-import DictionaryPage from "./pages/DictionaryPage";
-import TextsPage from "./pages/TextsPage";
-import HistoryPage from "./pages/HistoryPage";
+import DictionaryPageBackend from "./pages/DictionaryPageBackend";
+import TextsPageBackend from "./pages/TextsPageBackend";
+import HistoryPageBackend from "./pages/HistoryPageBackend";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import NotFound from "./pages/NotFound";
@@ -24,9 +24,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/translate" element={<TranslatePage />} />
-          <Route path="/dictionary" element={<DictionaryPage />} />
-          <Route path="/texts" element={<TextsPage />} />
-          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/dictionary" element={<DictionaryPageBackend />} />
+          <Route path="/texts" element={<TextsPageBackend />} />
+          <Route path="/history" element={<HistoryPageBackend />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
