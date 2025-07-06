@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -27,15 +26,492 @@ interface Text {
   image_url: string;
 }
 
+// Expanded collection of classical Sanskrit texts
+const fallbackTexts = [
+  {
+    id: "bhagavad-gita",
+    slug: "bhagavad-gita",
+    title: "Bhagavad Gita",
+    category: "Philosophy",
+    description: "The sacred dialogue between Krishna and Arjuna, offering guidance on ethics, duty and spiritual wisdom.",
+    chapters: 18,
+    verses: 700,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "ramayana",
+    slug: "ramayana",
+    title: "Ramayana",
+    category: "Epic",
+    description: "The epic tale of Prince Rama's journey, exemplifying duty, courage, and righteousness.",
+    chapters: 7,
+    verses: 24000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "mahabharata",
+    slug: "mahabharata",
+    title: "Mahabharata",
+    category: "Epic",
+    description: "One of the two major Sanskrit epics of ancient India, the other being the Ramayana.",
+    chapters: 18,
+    verses: 100000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "upanishads",
+    slug: "upanishads",
+    title: "Upanishads",
+    category: "Philosophy",
+    description: "Philosophical texts exploring concepts of reality, consciousness, and the nature of existence.",
+    chapters: 108,
+    verses: 10000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "vedas",
+    slug: "vedas",
+    title: "Vedas",
+    category: "Scripture",
+    description: "The oldest scriptures of Hinduism, containing hymns, philosophy, and guidance.",
+    chapters: 4,
+    verses: 20000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "yoga-sutras",
+    slug: "yoga-sutras",
+    title: "Yoga Sutras of Patanjali",
+    category: "Philosophy",
+    description: "Foundational text of yoga philosophy, outlining the eight limbs of yoga practice.",
+    chapters: 4,
+    verses: 196,
+    image_url: "/placeholder.svg"
+  },
+  // New additions - Puranas
+  {
+    id: "vishnu-purana",
+    slug: "vishnu-purana",
+    title: "Vishnu Purana",
+    category: "Mythology",
+    description: "One of the eighteen major Puranas, focusing on Lord Vishnu and his avatars.",
+    chapters: 6,
+    verses: 7000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "shiva-purana",
+    slug: "shiva-purana",
+    title: "Shiva Purana",
+    category: "Mythology",
+    description: "Sacred text dedicated to Lord Shiva, containing stories, hymns, and philosophical teachings.",
+    chapters: 7,
+    verses: 24000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "bhagavata-purana",
+    slug: "bhagavata-purana",
+    title: "Bhagavata Purana",
+    category: "Mythology",
+    description: "One of the most popular Puranas, focusing on the life and teachings of Krishna.",
+    chapters: 12,
+    verses: 18000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "devi-bhagavata-purana",
+    slug: "devi-bhagavata-purana",
+    title: "Devi Bhagavata Purana",
+    category: "Mythology",
+    description: "Purana dedicated to the Divine Mother, exploring her various forms and teachings.",
+    chapters: 12,
+    verses: 18000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "garuda-purana",
+    slug: "garuda-purana",
+    title: "Garuda Purana",
+    category: "Mythology",
+    description: "Sacred text focusing on death, afterlife, and the journey of the soul.",
+    chapters: 2,
+    verses: 19000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "skanda-purana",
+    slug: "skanda-purana",
+    title: "Skanda Purana",
+    category: "Mythology",
+    description: "Largest of the eighteen major Puranas, dedicated to Lord Skanda or Kartikeya.",
+    chapters: 7,
+    verses: 81000,
+    image_url: "/placeholder.svg"
+  },
+  // Additional Upanishads
+  {
+    id: "katha-upanishad",
+    slug: "katha-upanishad",
+    title: "Katha Upanishad",
+    category: "Philosophy",
+    description: "Upanishad containing the dialogue between Nachiketa and Death, exploring life's deeper meanings.",
+    chapters: 2,
+    verses: 119,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "mundaka-upanishad",
+    slug: "mundaka-upanishad",
+    title: "Mundaka Upanishad",
+    category: "Philosophy",
+    description: "Upanishad teaching the distinction between higher and lower knowledge.",
+    chapters: 3,
+    verses: 64,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "mandukya-upanishad",
+    slug: "mandukya-upanishad",
+    title: "Mandukya Upanishad",
+    category: "Philosophy",
+    description: "Shortest of the major Upanishads, exploring the nature of consciousness and reality.",
+    chapters: 1,
+    verses: 12,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "ishavasyopanishad",
+    slug: "ishavasyopanishad",
+    title: "Isha Upanishad",
+    category: "Philosophy",
+    description: "Opening Upanishad of the Shukla Yajurveda, exploring the unity of existence.",
+    chapters: 1,
+    verses: 18,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "chandogya-upanishad",
+    slug: "chandogya-upanishad",
+    title: "Chandogya Upanishad",
+    category: "Philosophy",
+    description: "One of the oldest Upanishads, containing the famous teaching 'Tat tvam asi' (Thou art That).",
+    chapters: 8,
+    verses: 628,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "brihadaranyaka-upanishad",
+    slug: "brihadaranyaka-upanishad",
+    title: "Brihadaranyaka Upanishad",
+    category: "Philosophy",
+    description: "The largest of the Upanishads, exploring the nature of the Self and ultimate reality.",
+    chapters: 6,
+    verses: 900,
+    image_url: "/placeholder.svg"
+  },
+  // Classical Literature and Poetry
+  {
+    id: "raghuvamsha",
+    slug: "raghuvamsha",
+    title: "Raghuvamsha",
+    category: "Literature",
+    description: "Kalidasa's epic poem narrating the lineage of Raghu, including the story of Rama.",
+    chapters: 19,
+    verses: 1564,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "kumarasambhava",
+    slug: "kumarasambhava",
+    title: "Kumarasambhava",
+    category: "Literature",
+    description: "Kalidasa's epic poem describing the birth of Kumara (Kartikeya), son of Shiva.",
+    chapters: 17,
+    verses: 953,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "meghaduta",
+    slug: "meghaduta",
+    title: "Meghaduta",
+    category: "Literature",
+    description: "Kalidasa's lyrical poem where a yaksha sends a message to his beloved through a cloud.",
+    chapters: 2,
+    verses: 120,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "abhijnana-shakuntalam",
+    slug: "abhijnana-shakuntalam",
+    title: "Abhijnana Shakuntalam",
+    category: "Literature",
+    description: "Kalidasa's famous drama about King Dushyanta and Shakuntala's love story.",
+    chapters: 7,
+    verses: 2000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "kiratarjuniya",
+    slug: "kiratarjuniya",
+    title: "Kiratarjuniya",
+    category: "Literature",
+    description: "Bharavi's epic poem about Arjuna's encounter with Shiva in the form of a hunter.",
+    chapters: 18,
+    verses: 1400,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "shishupala-vadha",
+    slug: "shishupala-vadha",
+    title: "Shishupala Vadha",
+    category: "Literature",
+    description: "Magha's epic poem describing Krishna's slaying of Shishupala.",
+    chapters: 22,
+    verses: 1800,
+    image_url: "/placeholder.svg"
+  },
+  // Devotional Texts
+  {
+    id: "hanuman-chalisa",
+    slug: "hanuman-chalisa",
+    title: "Hanuman Chalisa",
+    category: "Devotional",
+    description: "Forty-verse hymn in praise of Lord Hanuman, composed by Tulsidas.",
+    chapters: 1,
+    verses: 40,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "devi-mahatmya",
+    slug: "devi-mahatmya",
+    title: "Devi Mahatmya",
+    category: "Devotional",
+    description: "Sacred text celebrating the Divine Mother, also known as Chandi or Durga Saptashati.",
+    chapters: 13,
+    verses: 700,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "lalita-sahasranama",
+    slug: "lalita-sahasranama",
+    title: "Lalita Sahasranama",
+    category: "Devotional",
+    description: "Thousand names of Goddess Lalita, describing her divine attributes and powers.",
+    chapters: 1,
+    verses: 1000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "vishnu-sahasranama",
+    slug: "vishnu-sahasranama",
+    title: "Vishnu Sahasranama",
+    category: "Devotional",
+    description: "Thousand names of Lord Vishnu from the Mahabharata, describing his divine qualities.",
+    chapters: 1,
+    verses: 1000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "shiva-sahasranama",
+    slug: "shiva-sahasranama",
+    title: "Shiva Sahasranama",
+    category: "Devotional",
+    description: "Thousand names of Lord Shiva, celebrating his various forms and attributes.",
+    chapters: 1,
+    verses: 1000,
+    image_url: "/placeholder.svg"
+  },
+  // Philosophy and Vedanta
+  {
+    id: "brahma-sutras",
+    slug: "brahma-sutras",
+    title: "Brahma Sutras",
+    category: "Philosophy",
+    description: "Systematic philosophical treatise on the nature of Brahman and ultimate reality.",
+    chapters: 4,
+    verses: 555,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "ashtavakra-gita",
+    slug: "ashtavakra-gita",
+    title: "Ashtavakra Gita",
+    category: "Philosophy",
+    description: "Dialogue between sage Ashtavakra and King Janaka on the nature of self and reality.",
+    chapters: 20,
+    verses: 298,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "bhaja-govindam",
+    slug: "bhaja-govindam",
+    title: "Bhaja Govindam",
+    category: "Philosophy",
+    description: "Composition by Adi Shankaracharya emphasizing devotion over mere intellectual learning.",
+    chapters: 1,
+    verses: 31,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "viveka-chudamani",
+    slug: "viveka-chudamani",
+    title: "Viveka Chudamani",
+    category: "Philosophy",
+    description: "Major work by Adi Shankaracharya on the discrimination between the real and unreal.",
+    chapters: 1,
+    verses: 580,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "panchadashi",
+    slug: "panchadashi",
+    title: "Panchadashi",
+    category: "Philosophy",
+    description: "Advaita Vedanta text by Vidyaranya, explaining the nature of consciousness and reality.",
+    chapters: 15,
+    verses: 1500,
+    image_url: "/placeholder.svg"
+  },
+  // Dharma Shastras and Law
+  {
+    id: "manusmriti",
+    slug: "manusmriti",
+    title: "Manusmriti",
+    category: "Law",
+    description: "An ancient legal text and constitution among the many Dharmaśāstras of Hinduism.",
+    chapters: 12,
+    verses: 2600,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "yajnavalkya-smriti",
+    slug: "yajnavalkya-smriti",
+    title: "Yajnavalkya Smriti",
+    category: "Law",
+    description: "Important dharma shastra text covering law, ethics, and social regulations.",
+    chapters: 3,
+    verses: 1010,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "narada-smriti",
+    slug: "narada-smriti",
+    title: "Narada Smriti",
+    category: "Law",
+    description: "Ancient legal text focusing on judicial procedures and civil law.",
+    chapters: 1,
+    verses: 800,
+    image_url: "/placeholder.svg"
+  },
+  // Economics and Politics
+  {
+    id: "arthashastra",
+    slug: "arthashastra",
+    title: "Arthashastra",
+    category: "Economics & Politics",
+    description: "An ancient Indian treatise on statecraft, economic policy, and military strategy.",
+    chapters: 15,
+    verses: 6000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "nitishastra",
+    slug: "nitishastra",
+    title: "Nitishastra",
+    category: "Economics & Politics",
+    description: "Collection of ethical and political maxims for good governance and righteous living.",
+    chapters: 5,
+    verses: 500,
+    image_url: "/placeholder.svg"
+  },
+  // Ayurveda and Sciences
+  {
+    id: "charaka-samhita",
+    slug: "charaka-samhita",
+    title: "Charaka Samhita",
+    category: "Science",
+    description: "Foundational text of Ayurveda, covering principles of medicine and health.",
+    chapters: 8,
+    verses: 12000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "sushruta-samhita",
+    slug: "sushruta-samhita",
+    title: "Sushruta Samhita",
+    category: "Science",
+    description: "Ancient medical text focusing on surgery and surgical procedures in Ayurveda.",
+    chapters: 6,
+    verses: 5000,
+    image_url: "/placeholder.svg"
+  },
+  // Tantric Texts
+  {
+    id: "kularnava-tantra",
+    slug: "kularnava-tantra",
+    title: "Kularnava Tantra",
+    category: "Tantra",
+    description: "Important tantric text dealing with spiritual practices and esoteric knowledge.",
+    chapters: 17,
+    verses: 2000,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "mahanirvana-tantra",
+    slug: "mahanirvana-tantra",
+    title: "Mahanirvana Tantra",
+    category: "Tantra",
+    description: "Tantric text covering worship, meditation, and spiritual liberation practices.",
+    chapters: 14,
+    verses: 1500,
+    image_url: "/placeholder.svg"
+  },
+  // Additional Mantras and Hymns
+  {
+    id: "gayatri-mantra",
+    slug: "gayatri-mantra",
+    title: "Gayatri Mantra",
+    category: "Scripture",
+    description: "Most sacred mantra in Hinduism, invoking the divine light of universal consciousness.",
+    chapters: 1,
+    verses: 1,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "mahamrityunjaya-mantra",
+    slug: "mahamrityunjaya-mantra",
+    title: "Mahamrityunjaya Mantra",
+    category: "Scripture",
+    description: "Powerful mantra dedicated to Lord Shiva for healing and protection from death.",
+    chapters: 1,
+    verses: 1,
+    image_url: "/placeholder.svg"
+  },
+  {
+    id: "rudram-chamakam",
+    slug: "rudram-chamakam",
+    title: "Rudram Chamakam",
+    category: "Scripture",
+    description: "Vedic hymns in praise of Rudra (Shiva), used in worship and meditation.",
+    chapters: 2,
+    verses: 130,
+    image_url: "/placeholder.svg"
+  }
+];
+
 const categories = [
   "All",
   "Epic",
   "Philosophy",
   "Scripture",
   "Mythology",
+  "Literature",
   "Law",
   "Economics & Politics",
-  "Devotional"
+  "Devotional",
+  "Science",
+  "Tantra"
 ];
 
 export default function TextsLibraryBackend() {
@@ -54,7 +530,8 @@ export default function TextsLibraryBackend() {
 
   const loadTexts = async () => {
     if (!supabase) {
-      toast.error("Service is not available. Please check your configuration.");
+      console.log("No Supabase connection, using fallback texts");
+      setTexts(fallbackTexts);
       setIsLoading(false);
       return;
     }
@@ -66,12 +543,20 @@ export default function TextsLibraryBackend() {
 
       if (error) throw error;
 
-      setTexts(data.texts || []);
-      toast.success(`Loaded ${data.texts?.length || 0} texts`);
+      // If database has texts, use them; otherwise use fallback
+      const loadedTexts = data.texts && data.texts.length > 0 ? data.texts : fallbackTexts;
+      setTexts(loadedTexts);
+      
+      if (data.texts && data.texts.length > 0) {
+        toast.success(`Loaded ${data.texts.length} texts from database`);
+      } else {
+        toast.info(`Loaded ${fallbackTexts.length} curated Sanskrit texts`);
+      }
     } catch (error) {
       console.error('Load texts error:', error);
-      toast.error("Failed to load texts");
-      setTexts([]);
+      console.log("Using fallback texts due to error");
+      setTexts(fallbackTexts);
+      toast.info(`Loaded ${fallbackTexts.length} curated Sanskrit texts`);
     } finally {
       setIsLoading(false);
     }
@@ -156,7 +641,12 @@ export default function TextsLibraryBackend() {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border p-6">
-      <h2 className="text-2xl font-medium mb-6">Sanskrit Texts Library</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-medium">Sanskrit Texts Library</h2>
+        <div className="text-sm text-gray-500 bg-cream px-3 py-1 rounded-full">
+          {texts.length} Texts Available
+        </div>
+      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2 mb-6">
@@ -190,6 +680,11 @@ export default function TextsLibraryBackend() {
                   className={activeCategory === category ? "bg-saffron hover:bg-saffron/90" : ""}
                 >
                   {category}
+                  {category !== "All" && (
+                    <span className="ml-1 text-xs opacity-70">
+                      ({texts.filter(t => t.category === category).length})
+                    </span>
+                  )}
                 </Button>
               ))}
             </div>
@@ -223,6 +718,7 @@ export default function TextsLibraryBackend() {
               <div className="text-center py-8 text-gray-500">
                 <BookOpen className="mx-auto h-12 w-12 mb-4" />
                 <p>No texts found matching your criteria.</p>
+                <p className="text-sm mt-2">Try a different category or search term.</p>
               </div>
             )}
           </div>
